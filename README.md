@@ -8,7 +8,7 @@ TA_Scripts/
 
 │   ├── Maya/
 
-│   │   ├── script_name.py  # Description of what this script does
+│   │   ├── random_object_generator.py  # Script generates random number of cubes and spheres, positions them randomly in 3D space, applies random scales, and renames them based on their size (large or small).
 
 │   │   ├── another_script.py  
 
