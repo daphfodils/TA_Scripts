@@ -1,43 +1,50 @@
-import maya.cmds as cmds
 import random
-#random number of objects
-num_objects = random.randint(0, 10)
-#type of object created
-for i in range(num_objects):
-    if i % 2 == 0:
-        obj = cmds.polyCube()[0]
+import maya.cmds as cmds
+
+#create random objects function
+def create_random_obj():
+    choice = random.choice(['cube', 'sphere', 'cylinder', 'cone'])
+    if choice == 'cube':
+        return cmds.polyCube()[0]
+    elif choice == 'sphere':
+        return cmds.polySphere()[0]
+    elif choice == 'cylinder':
+        return cmds.polyCylinder()[0]
     else:
-        obj = cmds.polySphere()[0]
-        
-    #random position
-    random_x = random.uniform(-10,30)
-    random_y = random.uniform(10,30)
-    random_z = random.uniform(-10,30)
-    
-    cmds.move(random_x, random_y, random_z, obj)
-    
-    new_position = random_x, random_y, random_z
-    
-    #random scale
-    scale_value = random.uniform(0.5, 3)
+        return cmds.polyCone()[0]      
+
+#assign random positions
+def random_position(obj):
+    position_x = random.uniform(-10, 10)
+    position_y = random.uniform(0, 10)
+    position_z = random.uniform(-10, 10)
+#move to random positions
+    cmds.move(position_x, position_y, position_z,obj)
+
+#scale randomization function
+def random_scale(obj):
+    scale_value = random.uniform(0.5, 4)
+#scale 
     cmds.scale(scale_value, scale_value, scale_value, obj)
-    
-    #label
+    return scale_value
+
+#get size and rename function
+def object_size(obj, scale_value):
     if scale_value > 1:
-        label = "large"
+        size = "large"
     elif scale_value < 1:
-        label = "small"    
+        size = "small"
     else:
-        label = ""
+        size = ""
+    cmds.rename(f"{obj}_{size}")
+           
+def main():
+    num_objects = random.randint(5, 20)
+    for _ in range(num_objects):
+        obj = create_random_obj()
+        random_position(obj)
+        scale_value = random_scale(obj)
+        object_size(obj, scale_value)
         
-    #change name
-    if label:
-        new_name = f"{obj}_{label}"
-    else:
-        new_name = obj
         
-    #rename
-    cmds.rename(obj, new_name)
-    
-    #debug
-    print(f"{new_name}, {new_position[0]:.2f}, {new_position[1]:.2f}, {new_position[2]:.2f}")
+main()
