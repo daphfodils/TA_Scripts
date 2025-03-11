@@ -1,0 +1,83 @@
+import random
+import maya.cmds as cmds
+
+#create tree
+def create_tree():
+    #create trunk 
+    trunk = cmds.polyCylinder()[0] 
+    
+    #random scale
+    tree_scale_value = random.uniform(1, 2)
+    cmds.scale(tree_scale_value/4,tree_scale_value * 4,tree_scale_value/4,trunk)
+    
+    #get trunk dimensions
+    trunk_height = cmds.getAttr(f'{trunk}.scaleY') * 2 
+    trunk_width = cmds.getAttr(f'{trunk}.scaleX') * 2 
+    trunk_depth = cmds.getAttr(f'{trunk}.scaleZ') * 2 
+    
+    #move pivot of trunk to bottom
+    cmds.xform(trunk, pivots=(0, -trunk_height/2, 0))
+    
+    #move trunk above 0
+    cmds.move(0, trunk_height/2, 0, trunk)
+    
+    #random amount of leaves
+    num_leaves = random.randint(200,400)
+    
+    for _ in range(num_leaves):
+        #create leaves
+        leaves = cmds.polyCone()[0] if random.choice([True, False]) else cmds.polySphere()[0] 
+    
+        # Random leaves scaling
+        leaves_scale_value = random.uniform(0.1, 0.4) 
+        cmds.scale(leaves_scale_value,leaves_scale_value,leaves_scale_value,leaves)
+    
+        #get leaves height
+        leaves_height = cmds.getAttr(f'{leaves}.scaleY') * 2 
+        
+        #adjust pivot
+        cmds.xform(leaves, pivots=(0, -leaves_height/2, 0))
+    
+        #generate random leaves positions within trunk
+        position_x = random.gauss(0, trunk_width/3) #gaussian centered on trunk
+        position_x = max(min(position_x, trunk_width/2), -trunk_width/2)#clamping values bounds of trunk
+        
+        position_y = random.uniform(random.uniform(trunk_height*0.4, trunk_height*0.5), trunk_height) 
+        position_z = random.uniform(-trunk_depth / 2 + trunk_depth * 0.1 , trunk_depth/2 - trunk_depth *0.1)
+       
+        # Move leaves to correct position
+        cmds.move(position_x, position_y, position_z, leaves)
+        
+        #rotate leaves 90 degrees or 45
+        if position_x > 0:
+            rotate_angle = random.uniform(10, 180)
+        else:
+            rotate_angle = random.uniform(-180, -10)
+            
+        cmds.rotate(90, rotate_angle, 0, leaves, r=True)
+        
+        #parent leaves to tree
+        cmds.parent(leaves, trunk)
+        
+    #Group tree together
+    tree = cmds.group(trunk, leaves, name='tree_#')
+    
+    # Return the tree name for future randomization
+    return tree 
+
+#create forest    
+def forest():
+    num_trees = random.randint(50,100)
+    
+    #assign random positions and move trees
+    for _ in range(num_trees):
+        tree = create_tree()
+        
+        tree_position_x = random.uniform(-20, 20)
+        tree_position_y = random.uniform(0, 0)
+        tree_position_z = random.uniform(-20,20)
+        cmds.move(tree_position_x, tree_position_y, tree_position_z, tree)
+    
+    
+    
+forest()
