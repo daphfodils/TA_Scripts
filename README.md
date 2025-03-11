@@ -11,7 +11,7 @@ TA_Scripts/
 
 │   │   ├── random_object_generator.py  # Script generates random number of cubes and spheres, positions them randomly in 3D space, applies random scales, and renames them based on their size (large or small).
 
-│   │   ├── another_script.py  
+│   │   ├── Forest_generator.py #Procedural tree generation in Maya using Python. This script creates "trees" with random trunk and leaf positions, rotation, and scaling. It also generates a forest of trees at random positions,                       suitable for creating dynamic environments for 3D scenes or animation projects. Plug and play custom models.
 
 │   ├── Unreal/  (future scripts)
 
