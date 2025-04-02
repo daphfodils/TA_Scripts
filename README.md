@@ -4,15 +4,24 @@
 📂 Repository Structure
 
 TA_Scripts/
-
+```
 │── Python/
 
 │   ├── Maya/
 
-│   │   ├── random_object_generator.py  # Script generates random number of cubes and spheres, positions them randomly in 3D space, applies random scales, and renames them based on their size (large or small).
+│   │   ├── random_object_generator.py  # Script generates random number of cubes and spheres, positions them randomly in 3D space,
+                                        applies random scales, and renames them based on their size (large or small).
 
-│   │   ├── Forest_generator.py #Procedural tree generation in Maya using Python. This script creates "trees" with random trunk and leaf positions, rotation, and scaling. It also generates a forest of trees at random positions,                       suitable for creating dynamic environments for 3D scenes or animation projects. Plug and play custom models.
+│   │   ├── Forest_generator.py         #Procedural tree generation in Maya using Python. This script creates "trees" with random
+                                        trunk and leaf positions, rotation, and scaling. It also generates a forest of trees at
+                                        random positions, suitable for creating dynamic environments for 3D scenes or animation
+                                        projects.Plug and play custom models.
 
+│   │   ├── Maya_JSON_Importer.py       #Python script that uses Maya's file opener and reads a JSON file to create and position
+                                        3D objects. It supports predefined object types (trees and rocks, but easily editable),
+                                        creates and assign colors to shaders based on names or RGB values, and applies
+                                        transformations like scaling and positioning.
+```
 │   ├── Unreal/  (future scripts)
 
 │── C++/ (future Unreal Engine tools)
