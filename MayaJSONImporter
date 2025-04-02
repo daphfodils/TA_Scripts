@@ -1,0 +1,68 @@
+import json
+import maya.cmds as cmds
+
+fname = cmds.fileDialog2(fileMode=1, caption='Select a JSON File')[0] #open dialong to open json file
+
+#read json file
+with open(fname, 'r') as file:
+    data = json.load(file)
+  
+items = {}
+
+#colour function
+def assign_colour(object_name, colour):
+    
+    shader = cmds.shadingNode('lambert', asShader=True,name=f'{object_name}_shader')
+    shading_group = cmds.sets(renderable=True, noSurfaceShader=True, empty=True, name=f'{object_name}_SG')
+    
+    cmds.connectAttr(f'{shader}.outColor', f'{shading_group}.surfaceShader', force=True)
+    cmds.sets(object_name, edit=True, forceElement=shading_group)
+    
+    # use this dictionary if Predefined colors by words in json 
+    color_dict = {
+        "red": (1, 0, 0),
+        "green": (0, 1, 0),
+        "blue": (0, 0, 1),
+        "gray": (0.5, 0.5, 0.5),
+        "yellow": (1, 1, 0)
+    }
+    
+    # Apply color if in dictionary of words
+    if isinstance(colour,str) and colour in color_dict:
+        cmds.setAttr(f'{shader}.color', *color_dict[colour], type='double3')
+    #apply colour if direct RGB in json
+    elif isinstance(colour, list) and len(colour) == 3:
+      cmds.setAttr(f'{shader}.color', colour[0], colour[1], colour[2], type='double3')
+    #default to gray
+    else:
+        print(f'Warning: Unknown color {colour}, using default gray')
+        cmds.setAttr(f'{shader}.color', 0.5, 0.5, 0.5, type='double3')
+
+
+for item in data:
+    if 'name' in item:
+        words = item['name'].split('_') #split words at underscore
+        object_type =words[0] #get first word from split words
+        
+        items[object_type] = items.get(object_type, 0) + 1 #add to dictionary and track count
+       
+       #create shapes 
+        if object_type == 'tree':
+            obj = cmds.polyCylinder()[0] #create cylinder
+    
+        elif object_type == 'rock':
+            obj = cmds.polySphere()[0]  # Create sphere
+        
+        #move to positions
+        if 'position' in item and isinstance(item['position'], list) and len(item['position']) ==3:
+            position = item['position']
+            cmds.move(position[0], position[1], position[2], obj)
+        else:
+            print(f"Warning: Invalid or missing position for '{item['name']}, skipping move")
+
+        if 'scale' in item and isinstance(item['scale'],(int, float)):
+            s = item['scale']
+            cmds.scale(s, s, s,obj)
+            
+        if 'colour' in item:
+            assign_colour(obj,item['colour'])
